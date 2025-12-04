@@ -106,25 +106,45 @@ function get_user_choices()
 function step_0_ip_settings()
 {
     print -P "\n%F{blue}=== Step 0: Setting up IP address ===%f"
+
+    # Detect interface
     IFACE=$(ip -o link show | awk -F': ' '!/lo/ {print $2; exit}')
+
+    # Detect existing values (if any)
+    CURRENT_IP=$(ip -o -4 addr show "$IFACE" | awk '{print $4}')
+    CURRENT_GW=$(ip route | awk '/default/ && $5=="'"$IFACE"'" {print $3; exit}')
+    CURRENT_DNS=$(grep -E '^nameserver' /etc/resolv.conf | awk '{print $2}' | paste -sd' ' -)
+
+    # Fallback defaults if nothing found
+    [[ -z "$CURRENT_IP" ]] && CURRENT_IP="10.0.0.180/24"
+    [[ -z "$CURRENT_GW" ]] && CURRENT_GW="10.0.0.1"
+    [[ -z "$CURRENT_DNS" ]] && CURRENT_DNS="1.1.1.1 8.8.8.8"
+
+    # Interactive prompt with defaults
+    read "NEW_IP?Enter static IP [$CURRENT_IP]: "
+    read "NEW_GW?Enter gateway [$CURRENT_GW]: "
+    read "NEW_DNS?Enter DNS [$CURRENT_DNS]: "
+
+    # Use defaults if empty input
+    NEW_IP=${NEW_IP:-$CURRENT_IP}
+    NEW_GW=${NEW_GW:-$CURRENT_GW}
+    NEW_DNS=${NEW_DNS:-$CURRENT_DNS}
 
     sudo mkdir -p /etc/systemd/network
 
-    sudo systemctl enable systemd-networkd.service
-    sudo systemctl enable systemd-resolved.service
-
+    # Write configuration
     cat <<EOF | sudo tee /etc/systemd/network/20-static.network >/dev/null
 [Match]
 Name=$IFACE
 
 [Network]
-Address=10.0.0.180/24
-Gateway=10.0.0.99
-DNS=10.0.0.99
+Address=$NEW_IP
+Gateway=$NEW_GW
+DNS=$NEW_DNS
 EOF
 
     sudo systemctl restart systemd-networkd
-    print -P "%F{green}✓ IP address configured%f"
+    print -P "%F{green}✓ Static IP configured (%f$NEW_IP%F{green})%f"
 }
 
 function step_1_power_settings()
