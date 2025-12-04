@@ -83,6 +83,7 @@ function show_menu()
 {
     print -P "\n%F{cyan}=== Wave Server Setup Menu ===%f"
     print -P "%F{white}Choose which steps to execute:%f\n"
+    print -P "%F{yellow}0)%f Set static ip"
     print -P "%F{yellow}1)%f Fix power settings (disable hibernate/sleep)"
     print -P "%F{yellow}2)%f Configure git settings"
     print -P "%F{yellow}3)%f Install oh-my-zsh"
