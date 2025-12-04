@@ -108,17 +108,19 @@ function step_0_ip_settings()
     print -P "\n%F{blue}=== Step 0: Setting up IP address ===%f"
     IFACE=$(ip -o link show | awk -F': ' '!/lo/ {print $2; exit}')
 
+    sudo mkdir -p /etc/systemd/network
+
     sudo systemctl enable systemd-networkd.service
     sudo systemctl enable systemd-resolved.service
 
-    sudo cat <<-EOF >/etc/systemd/network/20-static.network
-	[Match]
-	Name=$IFACE
+    cat <<EOF | sudo tee /etc/systemd/network/20-static.network >/dev/null
+[Match]
+Name=$IFACE
 
-	[Network]
-	Address=10.0.0.180/24
-	Gateway=10.0.0.99
-	DNS=10.0.0.99
+[Network]
+Address=10.0.0.180/24
+Gateway=10.0.0.99
+DNS=10.0.0.99
 EOF
 
     sudo systemctl restart systemd-networkd
