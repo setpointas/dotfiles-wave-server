@@ -134,25 +134,19 @@ function step_3_oh_my_zsh()
 function step_4_install_software()
 {
     print -P "\n%F{blue}=== Step 4: Installing extra software ===%f"
-    sudo pacman -S stow neovim docker docker-compose ghostty
+    sudo pacman -S --needed tmux stow neovim docker docker-compose ghostty fastfetch zoxide lazygit lazydocker bat
     print -P "%F{green}✓ Extra software installed%f"
 }
 
 function step_5_dotfiles()
 {
     print -P "\n%F{blue}=== Step 5: Installing dotfiles ===%f"
-    if [[ -d ~/.dotfiles ]]; then
-        print -P "%F{yellow}~/.dotfiles is already present.\n%f"
-        prompt ''
-    else
-        git clone http://setpointas/dotfiles-wave-server.git ~/.dotfiles
-        git clone https://github.com/tmux-plugins/tpm.git ~/.tmux/plugins/tpm
-        mv ~/.zshrc ~/.zshrc_old
-        cd ~/.dotfiles
-        stow .
-        cd ~
-        prompt 'Dotfiles installed.'
-    fi
+    git clone https://github.com/tmux-plugins/tpm.git ~/.tmux/plugins/tpm
+    mv ~/.zshrc ~/.zshrc_old
+    cd ~/.dotfiles
+    stow .
+    cd ~
+    prompt 'Dotfiles installed.'
     print -P "%F{green}✓ Dotfiles setup completed%f"
 }
 
