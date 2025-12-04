@@ -213,6 +213,9 @@ function execute_steps()
 
     for step in $selected_steps; do
         case $step in
+            0)
+                step_0_ip_settings
+                ;;
             1)
                 step_1_power_settings
                 ;;
@@ -236,6 +239,7 @@ function execute_steps()
                 ;;
             8)
                 print -P "\n%F{green}=== Running ALL steps ===%f"
+                step_0_ip_settings
                 step_1_power_settings
                 step_2_git_config
                 step_3_oh_my_zsh
