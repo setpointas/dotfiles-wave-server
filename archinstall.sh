@@ -102,6 +102,28 @@ function get_user_choices()
     echo $choices
 }
 
+function step_0_ip_settings()
+{
+    print -P "\n%F{blue}=== Step 0: Setting up IP address ===%f"
+    IFACE=$(ip -o link show | awk -F': ' '!/lo/ {print $2; exit}')
+
+    systemctl enable systemd-networkd.service
+    systemctl enable systemd-resolved.service
+
+    cat <<'EOF' >/etc/systemd/network/20-static.network
+    [Match]
+    Name=$IFACE
+
+    [Network]
+    Address=10.0.0.180/24
+    Gateway=10.0.0.99
+    DNS=10.0.0.99
+    EOF
+
+    systemctl restart systemd-networkd
+    print -P "%F{green}✓ IP address configured%f"
+}
+
 function step_1_power_settings()
 {
     print -P "\n%F{blue}=== Step 1: Fixing power settings ===%f"
