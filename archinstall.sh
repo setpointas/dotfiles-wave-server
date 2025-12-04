@@ -180,8 +180,8 @@ function step_4_install_software()
 {
     print -P "\n%F{blue}=== Step 4: Installing extra software ===%f"
     sudo pacman -S --needed tmux stow neovim docker docker-compose ghostty fastfetch zoxide lazygit lazydocker bat
-    git clone https://github.com/LazyVim/starter ~/.config/nvim
     rm -rf ~/.config/nvim
+    git clone https://github.com/LazyVim/starter ~/.config/nvim
     rm -rf ~/.local/share/nvim
     rm -rf ~/.local/state/nvim
     rm -rf ~/.cache/nvim
