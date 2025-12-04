@@ -110,15 +110,15 @@ function step_0_ip_settings()
     systemctl enable systemd-networkd.service
     systemctl enable systemd-resolved.service
 
-    cat <<'EOF' >/etc/systemd/network/20-static.network
-    [Match]
-    Name=$IFACE
+    cat <<-EOF >/etc/systemd/network/20-static.network
+	[Match]
+	Name=$IFACE
 
-    [Network]
-    Address=10.0.0.180/24
-    Gateway=10.0.0.99
-    DNS=10.0.0.99
-    EOF
+	[Network]
+	Address=10.0.0.180/24
+	Gateway=10.0.0.99
+	DNS=10.0.0.99
+EOF
 
     systemctl restart systemd-networkd
     print -P "%F{green}✓ IP address configured%f"
