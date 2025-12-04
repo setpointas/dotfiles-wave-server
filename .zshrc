@@ -120,6 +120,7 @@ function y() {
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias lg=lazygit
+alias ld=lazydocker
 alias cl=clear
 
 #Initialize zoxide
